@@ -42,10 +42,20 @@ const UserLogin = mongoose.Schema(
         city:{
             type:String
         },
+        country:{
+            type:String
+        },
+        state:{
+            type:String
+        },
         about:{
             type:String
         },
         image : {
+            type:String,
+            default:'https://images.coinbase.com/avatar?h=6167e77e937b6a1ad6721fgMjjtXk0n439ENDSUWEmi1y6LBSIkjKnEfHFTy%0Ak5Mo&s=128'
+        },
+         coverimage : {
             type:String,
             default:'https://images.coinbase.com/avatar?h=6167e77e937b6a1ad6721fgMjjtXk0n439ENDSUWEmi1y6LBSIkjKnEfHFTy%0Ak5Mo&s=128'
         },

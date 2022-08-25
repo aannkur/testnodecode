@@ -234,6 +234,8 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
     // }
 })
 
+
+
 Router.get('/userInfo', (req, res) => {
     const userid = req.headers['userid']
     if (!userid) {
@@ -281,6 +283,39 @@ Router.patch("/update", (req, res) => {
             price: price,
         onboarding: true
 
+
+        }
+        ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
+            res.status(200).json({
+                message: "Add new details",
+                result: result,
+                status: 200,
+            })
+        }).catch((error) => {
+            res.json({
+                error: error,
+                status: 400,
+            })
+        })
+    // } 
+})
+
+
+
+Router.patch("/updatecoverphotos",upload.single("coverimage"), (req, res) => {
+    const userid = req.headers['userid']
+    if (!userid) {
+        return res.status(401).json({
+            message: "Id is requried for Authentication",
+            status: 400,
+        })
+    }
+    
+
+    // if (!req.file) {
+        const data = {
+           
+            coverimage: req.file.path,
 
         }
         ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
