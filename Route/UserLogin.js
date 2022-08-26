@@ -310,8 +310,6 @@ Router.patch("/updatecoverphotos",upload.single("coverimage"), (req, res) => {
             status: 400,
         })
     }
-    
-
     // if (!req.file) {
         const data = {
            

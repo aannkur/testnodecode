@@ -7,91 +7,66 @@ const Token = require('../Modal/token')
 var crypto = require("crypto");
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const SendEmail = require('../utility/forgot')
 const Objectid = mongoose.Types.ObjectId;
 var jwt = require('jsonwebtoken');
 
-Router.post('/resetpassword', async(req, res) => {
+Router.post('/resetpassword', async (req, res) => {
+
     const { email } = req.body
     const validate = passwordreset({ email })
-
-    if (!validate.isValid) {
-        return res.status(400).json({
-            message: "validation Errors",
-            errors: validate.error,
-            status: false,
-        });
-    } else {
-        UserModal.findOne({ email: email }).exec(async(error, user) => {
-            if (error) {
-                return res.status(422).json({
-                    message: "Email Verification failed",
-                    errors: error,
-                    status: false,
-                })
-            } else {
-                 Token.findOne({ userId: user._id }).exec((error,usertoken) => {
-                    if(error ) {
-                        return res.status(422).json({
-                            message: "Token get failed",
-                            errors: error,
-                            status: false,
+    crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log(err)
+        }
+        const token = buffer.toString("hex")
+        if (!validate.isValid) {
+            return res.status(400).json({
+                message: "Please enter your Email",
+                errors: validate.error,
+                status: false,
+            });
+        } else {
+            UserModal.findOne({ email: email }).exec((error, user) => {
+                if (error) {
+                    return res.status(422).json({
+                        message: "Connection Failed",
+                        errors: error,
+                        status: false,
+                    })
+                } else {
+                    user.save().then(async (result) => {
+                        res.status(201).json({
+                            message: "Mail sent. Check your email",
+                            user: result,
+                            status: 201
                         })
-                    }else {
-                        if(usertoken){
-                            return res.status(422).json({
-                                message: "User already send link",
-                                errors: error,
-                                status: false,
-                            })
 
-                        }else {
-const tokenget = jwt.sign({ email: 'email' }, "hdjhjfdhjk", { expiresIn: '5min' })
-                // user.token = token
-                // user.expireToken = Date.now() + 3600000
-                          const  token = new Token({
-                                        userId: user._id,
-                                        token: tokenget,
-                                    })
-                                    token.save().then((results) => {
-                                        res.status(201).json({
-                                            message: "Forget Password Link Send",
-                                            status: true,
-                                            result: results
-                                        })
-                                    }).catch((err) => {
-                                        res.status(500).json({
-                                            massage: "server error",
-                                            err: err,
-                                            status: false
-                                        })
-                                    })
-                                    // token.save().then((res) => {
-                                    //     res.status(201).json({
-                                    //         message: "Forget Password Link Send",
-                                    //         status: 201,
-                                    //         result: result
-                                    //     })
-                                    // }).catch((err) => {
-                                    //     res.status(400).json({
-                                    //         massage: "server error",
-                                    //         err: err
-                                           
-                                    //     })
-                
-                                    // })
+                        let emailObj = {
+                            userid: user._id,
+                            token: user.token,
+                            email: email,
                         }
-                    }
 
-                })
-            }
-        })
-    }
+                        let sendLoginCredentials = SendEmail.sendMail(emailObj)
 
 
+                    }).catch((err) => {
+                        res.status(500).json({
+                            massage: "Connection Failed",
+                            err: err,
+                            status: 500
+                        })
+                    })
+
+                }
+            })
+        }
+    })
 })
 
 
-Router.post('/newpassword/:token/:userid', (req, res) => {
+Router.post('/newpassword/:token', (req, res) => {
     const { newpassword } = req.body
 
     const validate = passwordnew({ newpassword })
@@ -102,7 +77,7 @@ Router.post('/newpassword/:token/:userid', (req, res) => {
             status: false,
         });
     } else {
-        UserModal.findOne({ _id: req.params.userid }).exec((error, user) => {
+        UserModal.findOne({ _id: req.params.token }).exec((error, user) => {
             if (error) {
                 return res.status(422).json({
                     message: "to get Token Error",
@@ -116,36 +91,17 @@ Router.post('/newpassword/:token/:userid', (req, res) => {
                     status: false,
                 })
             } else {
-                const token = Token.findOne({ userId: user._id, token: req.params.token }).exec((error,tokenget) => {
-                    if(error) {
-                        return res.status(400).json({
-                                    message: "Invalid link",
-                                    errors: error,
-                                    
-                                })
-                    }else {
-                        if(!tokenget){
-                            return res.status(400).json({
-                                        message: "Invalid link or expired",
-                                        errors: error,
-                                        status: false,
-                                    })
-                        } else {
-                            let hashedPassword = bcrypt.hashSync(newpassword, 8)
-                    user.password = hashedPassword
-                    user.save().then((result) => {
-                        res.json(
-                            {
-                                message: "Password changed",
-                                result: result
-                            }
-                        )
-                    })
-
+                let hashedPassword = bcrypt.hashSync(newpassword, 8)
+                user.password = hashedPassword
+                user.save().then((result) => {
+                    res.json(
+                        {
+                            message: "Password changed",
+                            result: result
                         }
-                    }
+                    )
                 })
-               
+
             }
         })
     }
