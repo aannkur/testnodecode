@@ -23,7 +23,6 @@ app.use('/api', AccountDelete)
 app.use('/api', Influncer)
 app.use('/api', Brand)
 
-
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })

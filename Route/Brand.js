@@ -17,7 +17,7 @@ Router.get('/Brand', (req, res) => {
             status: 400,
         })
     }
-    ModalResiter.find({ $and: [{userselection:'Brand'},  {about: {$nin:[null,""]}} ] }).then((result) => {
+    ModalResiter.find({userselection:'Brand' }).then((result) => {
         res.status(200).json({
             message: "Get User Profile",
             result: result,
