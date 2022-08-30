@@ -7,7 +7,8 @@ const passwordchange = require('./Route/passwordchange')
 const AccountDelete = require('./Route/AccountDelete')
 const Influncer = require('./Route/Influncer')
 const Brand = require('./Route/Brand')
-
+const Conversation = require('./Route/Conversation')
+const Converationmessage = require('./Route/Converationmessage')
 
 app.use('/uploads', express.static('uploads'));
 var bodyParser = require('body-parser')
@@ -22,6 +23,10 @@ app.use('/api', passwordchange)
 app.use('/api', AccountDelete)
 app.use('/api', Influncer)
 app.use('/api', Brand)
+app.use('/api', Conversation)
+app.use('/api', Converationmessage)
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
