@@ -21,7 +21,7 @@ const upload = multer({ storage: storage })
 
 Router.post('/register', (req, res) => {
 
-    const { username, email, password} = req.body
+    const { username, email, password } = req.body
 
     const validate = registerValidate({ username, email, password })
 
@@ -72,9 +72,9 @@ Router.post('/register', (req, res) => {
                                     email: email.toLowerCase().trim(),
                                     password: hashedPassword
                                 })
-                                const token = jwt.sign({ email }, 'secret key',{expiresIn: 1000}
+                                const token = jwt.sign({ email }, 'secret key', { expiresIn: 1000 }
                                 );
-                                
+
                                 // save user token
                                 singup.token = token;
                                 singup.save().then((results) => {
@@ -104,7 +104,7 @@ Router.post('/register', (req, res) => {
 
 
 Router.post('/login', (req, res) => {
-   
+
 
     const { email, password } = req.body
     const validate = validationLogin({ email, password })
@@ -145,7 +145,7 @@ Router.post('/login', (req, res) => {
                     return res.status(401).json({
                         message: "Incorrect Password.",
                         status: 401
-                        
+
                     })
 
                 } else {
@@ -153,9 +153,9 @@ Router.post('/login', (req, res) => {
                         res.status(201).json({
                             message: "Credentials Verified.",
                             status: true,
-                            result:user
+                            result: user
                         })
-                       
+
                     } else {
                         res.status(401).json({
                             message: "Incorrect Password.",
@@ -180,7 +180,7 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             status: 400,
         })
     }
-    const { firstName, lastName,  gender, dob,about,city,intrested } = req.body
+    const { firstName, lastName, gender, dob, about, city, intrested, state, country } = req.body
     console.log(req.body)
 
     if (!req.file) {
@@ -189,9 +189,12 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             lastName: lastName,
             gender: gender,
             dob: dob,
-            about:about,
-            city:city,
-            intrested:intrested
+            about: about,
+            city: city,
+            intrested: intrested,
+            country: country,
+            state: state,
+            onboarding: true
 
         }
         ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
@@ -213,10 +216,13 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             lastName: lastName,
             gender: gender,
             dob: dob,
-            about:about,
-            city:city,
+            about: about,
+            city: city,
             image: req.file.path,
-            intrested:intrested
+            intrested: intrested,
+            country: country,
+            state: state,
+            onboarding: true
         }
         ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
             res.status(200).json({
@@ -250,7 +256,7 @@ Router.get('/userInfo', (req, res) => {
             status: 400,
         })
     }
-    ModalResiter.findById({_id:userid}).then((result) => {
+    ModalResiter.findById({ _id: userid }).then((result) => {
         res.status(200).json({
             message: "Get User Profile",
             result: result,
@@ -262,7 +268,7 @@ Router.get('/userInfo', (req, res) => {
             status: 501,
         })
     })
-    
+
 
 
 })
@@ -275,34 +281,34 @@ Router.patch("/update", (req, res) => {
             status: 400,
         })
     }
-    const { userselection , price } = req.body
+    const { userselection, price } = req.body
 
     // if (!req.file) {
-        const data = {
-            userselection: userselection,
-            price: price,
-        onboarding: true
+    const data = {
+        userselection: userselection,
+        price: price,
 
 
-        }
-        ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
-            res.status(200).json({
-                message: "Add new details",
-                result: result,
-                status: 200,
-            })
-        }).catch((error) => {
-            res.json({
-                error: error,
-                status: 400,
-            })
+
+    }
+    ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
+        res.status(200).json({
+            message: "Add new details",
+            result: result,
+            status: 200,
         })
+    }).catch((error) => {
+        res.json({
+            error: error,
+            status: 400,
+        })
+    })
     // } 
 })
 
 
 
-Router.patch("/updatecoverphotos",upload.single("coverimage"), (req, res) => {
+Router.patch("/updatecoverphotos", upload.single("coverimage"), (req, res) => {
     const userid = req.headers['userid']
     if (!userid) {
         return res.status(401).json({
@@ -311,23 +317,23 @@ Router.patch("/updatecoverphotos",upload.single("coverimage"), (req, res) => {
         })
     }
     // if (!req.file) {
-        const data = {
-           
-            coverimage: req.file.path,
+    const data = {
 
-        }
-        ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
-            res.status(200).json({
-                message: "Add new details",
-                result: result,
-                status: 200,
-            })
-        }).catch((error) => {
-            res.json({
-                error: error,
-                status: 400,
-            })
+        coverimage: req.file.path,
+
+    }
+    ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
+        res.status(200).json({
+            message: "Add new details",
+            result: result,
+            status: 200,
         })
+    }).catch((error) => {
+        res.json({
+            error: error,
+            status: 400,
+        })
+    })
     // } 
 })
 
