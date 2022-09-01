@@ -25,6 +25,7 @@ jobs:
          script: |
           cd /var/www/html/creatortrendi-backend
               source /root/.nvm/nvm.sh
+              git pull origin main
               npm install
               pm2 stop index.js
               pm2 start index.js
