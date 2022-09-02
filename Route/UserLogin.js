@@ -337,5 +337,34 @@ Router.patch("/updatecoverphotos", upload.single("coverimage"), (req, res) => {
     // } 
 })
 
+Router.patch("/photos", upload.single("image"), (req, res) => {
+    const userid = req.headers['userid']
+    if (!userid) {
+        return res.status(401).json({
+            message: "Id is requried for Authentication",
+            status: 400,
+        })
+    }
+    // if (!req.file) {
+    const data = {
+
+        image: req.file.path,
+
+    }
+    ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
+        res.status(200).json({
+            message: "Add new details",
+            result: result,
+            status: 200,
+        })
+    }).catch((error) => {
+        res.json({
+            error: error,
+            status: 400,
+        })
+    })
+    // } 
+})
+
 
 module.exports = Router
