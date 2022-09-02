@@ -3,6 +3,7 @@ const express = require('express')
 const Router = express.Router()
 const Userlogin = require('../Modal/UserLogin')
 const { OAuth2Client } = require('google-auth-library')
+var jwt = require('jsonwebtoken');
 
 
 const Client = new OAuth2Client("53424393985-pa30ia2qb4ecu1ci62dk6fg8bbksalgn.apps.googleusercontent.com")
@@ -12,7 +13,7 @@ Router.post("/loginwithGoogle", function (req, res) {
     Client.verifyIdToken({ idToken: tokenId, audience: "53424393985-pa30ia2qb4ecu1ci62dk6fg8bbksalgn.apps.googleusercontent.com" }).then((response) => {
         const { email, email_verified, name, sub, picture } = response.payload
         console.log(response.payload)
-        var token = jwt.sign({ email: 'email' }, 'secrate');
+        // var token = jwt.sign({ email: 'email' }, 'secrate');
        
         if (email_verified) {
             Userlogin.findOne({ email: email }).exec((error, user) => {
@@ -26,7 +27,7 @@ Router.post("/loginwithGoogle", function (req, res) {
                     if (user) {
                         res.status(201).json({
                             message: "Welcome to Creator Trendi",
-                            user: user,
+                            result: user,
                             status: true,
                         })
                     } else {
@@ -37,18 +38,24 @@ Router.post("/loginwithGoogle", function (req, res) {
                             image: picture
                         })
 
-                        const token = jwt.sign({ image }, 'secret key',
+                        const token = jwt.sign({ email }, 'secret key',
                             {
                                 expiresIn: "2h",
                             }
                         );
                         newUser.token = token;
-                                res.status(201).json({
-                                    message: "Your account is registered successfully",
-                                    success: true,
-                                    user: Details,
-                                    status: 201
-                                })
+                        newUser.save().then((results) => {
+                            res.status(201).json({
+                                message: "Your account is registered successfully.",
+                                status: true,
+                                result: results
+                            })
+                        }).catch((err) => {
+                            res.status(400).json({
+                                massage: "server error",
+                                err: err
+                            })
+                        })
 
                     }
                 }
