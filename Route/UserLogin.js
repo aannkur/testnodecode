@@ -180,7 +180,7 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             status: 400,
         })
     }
-    const { firstName, lastName, gender, dob, about, city, intrested, state, country } = req.body
+    const { firstName, lastName, gender, dob, about, city, intrested, state, country,Business_Name, Company_Started } = req.body
     console.log(req.body)
 
     if (!req.file) {
@@ -194,6 +194,8 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             intrested: intrested,
             country: country,
             state: state,
+            Business_Name:Business_Name,
+            Company_Started:Company_Started,
             onboarding: true
 
         }
@@ -222,6 +224,8 @@ Router.put("/updateProfile", upload.single("image"), (req, res) => {
             intrested: intrested,
             country: country,
             state: state,
+            Business_Name:Business_Name,
+            Company_Started:Company_Started,
             onboarding: true
         }
         ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
@@ -345,11 +349,8 @@ Router.patch("/photos", upload.single("image"), (req, res) => {
             status: 400,
         })
     }
-    // if (!req.file) {
     const data = {
-
         image: req.file.path,
-
     }
     ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
         res.status(200).json({
@@ -357,6 +358,34 @@ Router.patch("/photos", upload.single("image"), (req, res) => {
             result: result,
             status: 200,
         })
+    }).catch((error) => {
+        res.json({
+            error: error,
+            status: 400,
+        })
+    })
+    // } 
+})
+
+Router.patch("/website", (req, res) => {
+    const userid = req.headers['userid']
+    const {website} = req.body
+    if (!userid) {
+        return res.status(401).json({
+            message: "Id is requried for Authentication",
+            status: 400,
+        })
+    }
+    const data = {
+        website_name: website,
+    }
+    ModalResiter.findOneAndUpdate({ _id: userid }, { $set: data }, { new: true }).then((result) => {
+        res.status(200).json({
+            message: "Add Website",
+            result: result,
+            status: 200,
+        })
+        console.log(result)
     }).catch((error) => {
         res.json({
             error: error,

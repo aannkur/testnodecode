@@ -75,6 +75,15 @@ const UserLogin = mongoose.Schema(
         },
         profile_complate:{
             type:String
+        },
+        Business_Name:{
+            type:String
+        },
+        Company_Started:{
+            type:Date
+        },
+        website_name:{
+            type:String
         }
         
 

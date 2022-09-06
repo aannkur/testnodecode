@@ -10,6 +10,7 @@ const Brand = require('./Route/Brand')
 const Conversation = require('./Route/Conversation')
 const Converationmessage = require('./Route/Converationmessage')
 const Loginwithgoogle = require('./Route/loginwithgoogle')
+const Gigscreate = require('./Route/gigscreate')
 
 
 app.use('/uploads', express.static('uploads'));
@@ -28,6 +29,8 @@ app.use('/api', Brand)
 app.use('/api', Conversation)
 app.use('/api', Converationmessage)
 app.use('/api', Loginwithgoogle)
+app.use('/api', Gigscreate)
+
 
 
 
