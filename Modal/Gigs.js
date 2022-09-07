@@ -18,10 +18,12 @@ const Gigs = mongoose.Schema(
             type:String
         },
         interests:{
-            type:Array
+            type:Array,
+            default:[]
         },
         channels:{
-            type:Array
+            type:Array,
+            default:[]
         },
         minimum_followers:{
             type:String
