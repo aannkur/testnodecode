@@ -88,7 +88,7 @@ Router.get('/getgigs', (req, res) => {
             status: 400,
         })
     }
-    Gigs.find().populate('user',{ Business_Name: 1, image: 1}).then((result) => {
+    Gigs.find().populate('user',{ Business_Name: 1, image: 1, coverimage: 1}).then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,
