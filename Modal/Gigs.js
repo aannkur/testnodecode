@@ -39,8 +39,11 @@ const Gigs = mongoose.Schema(
             type:String
         },
         commission:{
-            type:Number  
-        }
+            type:String,  
+        },
+        
+            interestPepole: [{ type: mongoose.Types.ObjectId, ref: 'UserLogin' }],
+        
         
 
     }, { timestamps: true }
