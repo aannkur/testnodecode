@@ -14,25 +14,47 @@ Router.post("/conversation", (req, res) => {
             status: 400,
         })
     }
-    const New = new ConversationModel({
-        userId: new mongoose.Types.ObjectId(),
-        members: [userid, receiverId]
+
+    ConversationModel.findOne({
+        $or: [{ members: [userid, receiverId] },
+        { members: [receiverId, userid] }]
+    }).exec((error, conversation) => {
+        if(error) {
+            return res.status(400).json({
+                message: "to converstion fatch issue",
+                status: 400,
+            })
+        }else if(conversation) {
+            return res.status(200).json({
+                message: "you alreay start the converstion",
+                status: 200,
+            })
+            
+        }else {
+            const New = new ConversationModel({
+                userId: new mongoose.Types.ObjectId(),
+                members: [userid, receiverId]
+        
+            })
+            New.save().then((results) => {
+                res.status(201).json({
+                    message: "New conversaton Add",
+                    success: true,
+                    results: results,
+                    status: 201
+                })
+            }).catch(err => {
+                res.status(500).json({
+                    message: " server error",
+                    success: false,
+                    error: err.message
+                })
+            })
+
+        }
 
     })
-    New.save().then((results) => {
-        res.status(201).json({
-            message: "New conversaton Add",
-            success: true,
-            results: results,
-            status: 201
-        })
-    }).catch(err => {
-        res.status(500).json({
-            message: " server error",
-            success: false,
-            error: err.message
-        })
-    })
+   
 })
 
 Router.get("/get-conversation", (req, res) => {
@@ -73,7 +95,7 @@ Router.get("/get-conversation-one", (req, res) => {
     })
 })
 
-Router.get('/getUserFriends/:id',(req,res) => {
+Router.get('/getUserFriends/:id', (req, res) => {
     const userid = req.headers['userid']
     if (!userid) {
         return res.status(400).json({
@@ -81,7 +103,7 @@ Router.get('/getUserFriends/:id',(req,res) => {
             status: 400,
         })
     }
-    User.find({_id:req.params.id}).then((result) => {
+    User.find({ _id: req.params.id }).then((result) => {
         res.status(201).json({
             message: "found data successfully ",
             result: result,
