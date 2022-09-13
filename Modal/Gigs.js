@@ -41,6 +41,11 @@ const Gigs = mongoose.Schema(
         commission:{
             type:String,  
         },
+        status: {
+            type: String,
+            enum : ['Open','In-Process','Close'],
+            default: 'Open'
+        },
         
             interestPepole: [{ type: mongoose.Types.ObjectId, ref: 'UserLogin' }],
         

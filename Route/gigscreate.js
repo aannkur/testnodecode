@@ -269,6 +269,34 @@ Router.put("/updateGigs/:id", upload.single("image"), (req, res) => {
 })
 
 
+Router.put("/changeStatus/:id", (req, res) => {
+    const idgigs = (req.params.id).trim()
+    const userid = req.headers['userid']
+    if (!userid) {
+        return res.status(401).json({
+            message: "Id is requried for Authentication",
+            status: 400,
+        })
+    }
+    const { status } = req.body
+        const data = {
+            status:status
+        }
+        Gigs.findOneAndUpdate({ _id:Objectid(idgigs)}, { $set: data }, { new: true }).then((result) => {
+            res.status(200).json({
+                message: " Gigs Status Change",
+                result: result,
+                status: 200,
+            })
+        }).catch((err) => {
+            res.json({
+                error: err,
+                status: 401,
+            })
+        })
+})
+
+
 
 
 
