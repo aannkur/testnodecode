@@ -125,7 +125,7 @@ Router.get('/getgigsupdate/:id', (req, res) => {
             status: 400,
         })
     }
-    Gigs.findOne({_id:id}).then((result) => {
+    Gigs.findOne({_id:id}).populate('interestPepole').then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,
@@ -137,9 +137,6 @@ Router.get('/getgigsupdate/:id', (req, res) => {
             status: 401,
         })
     })
-
-
-
 })
 
 
@@ -157,7 +154,7 @@ Router.get('/getgigsUser', (req, res) => {
             status: 400,
         })
     }
-    Gigs.find({ user: userid }).populate('user', { Business_Name: 1, image: 1, coverimage: 1 }).then((result) => {
+    Gigs.find({ user: userid }).populate('user', { Business_Name: 1, image: 1, coverimage: 1 }).populate('interestPepole').then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,
