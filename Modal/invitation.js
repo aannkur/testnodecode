@@ -3,7 +3,11 @@ var mongoose = require('mongoose');
 
 const invitation = mongoose.Schema(
     {
-        user: {
+        userto: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'UserLogin'
+        },
+        userfrom: {
             type: mongoose.Schema.Types.ObjectId,
             ref:'UserLogin'
         },

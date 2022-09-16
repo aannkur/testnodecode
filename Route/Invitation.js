@@ -9,7 +9,7 @@ const Userlogin = require('../Modal/UserLogin')
 
 
 Router.post('/Invitation/', async (req, res) => {
-    const { gigid, invitationStatus } = req.body
+    const {userfrom, gigid, invitationStatus } = req.body
     // const gigid = req.params.id
     const userid = req.headers['userid']
     if (!userid) {
@@ -25,7 +25,7 @@ Router.post('/Invitation/', async (req, res) => {
         })
     }
 
-    Invitation.find({ user: userid, gigs: gigid }).exec((error, result) => {
+    Invitation.find({ userto: userid,userfrom:userfrom, gigs: gigid }).exec((error, result) => {
         console.log(result)
         if (error) {
             return res.status(400).json({
@@ -41,7 +41,8 @@ Router.post('/Invitation/', async (req, res) => {
 
         } else {
             const invitationuser = new Invitation({
-                user: userid,
+                userto: userid,
+                userfrom: userfrom,
                 gigs: gigid,
                 invitationStatus: invitationStatus
             })
@@ -82,7 +83,7 @@ Router.get('/getinvitationUser', (req, res) => {
             status: 400,
         })
     }
-    Invitation.find({ user: userid,invitationStatus:'Pending' }).populate('user').populate('gigs').then((result) => {
+    Invitation.find({ userto: userid,invitationStatus:'Pending' }).populate('userto').populate('userfrom').populate('gigs').then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,
