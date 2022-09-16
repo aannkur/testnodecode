@@ -28,6 +28,12 @@ Router.get('/Suggestiongigs',async(req,res) => {
                 foreignField: "intrested",
                 as: "intrested",
             },
+            $lookup: {
+                from: "userlogins",
+                localField: "user",
+                foreignField: "_id",
+                as: "userInfo",
+            },
         }], (error, resulte) => {
             if (error) {
                 return res.status(400).json({
