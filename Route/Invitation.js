@@ -142,7 +142,7 @@ Router.get('/SuggestionInfluencers/:id',async(req,res) => {
     }
     const currentGigs = await Gigs.findById(req.params.id);
     Userlogin.aggregate(
-        [{ $match: { intrested: { $in: [...currentGigs.interests] } } },
+        [{ $match: {$and :[{ intrested: { $in: [...currentGigs.interests] } },{userselection:'Influencer'} ]} },
         {
             $lookup: {
                 from: "Gigs",
