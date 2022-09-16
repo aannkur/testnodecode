@@ -11,6 +11,9 @@ const Brand = require('./Route/Brand')
 const Conversation = require('./Route/Conversation')
 const Converationmessage = require('./Route/Converationmessage')
 const Loginwithgoogle = require('./Route/loginwithgoogle')
+const SuggestionGigs = require('./Route/SuggestionGigs')
+const Invitation = require('./Route/Invitation')
+
 var cors = require('cors')
 const Gigscreate = require('./Route/gigscreate')
 
@@ -31,6 +34,10 @@ app.use('/api', Brand)
 app.use('/api', Conversation)
 app.use('/api', Converationmessage)
 app.use('/api', Loginwithgoogle)
+app.use('/api', SuggestionGigs)
+app.use('/api', Invitation)
+
+
 
 
 app.get('/', (req, res) => {
