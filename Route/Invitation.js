@@ -1,6 +1,10 @@
 const express = require('express')
 const Router = express.Router()
 const Invitation = require('../Modal/invitation')
+const Gigs = require('../Modal/Gigs')
+
+const Userlogin = require('../Modal/UserLogin')
+
 // const Gigs = require('../Modal/Gigs')
 
 
@@ -119,6 +123,53 @@ Router.put("/statusinvitation/:id", (req, res) => {
                 error: err,
                 status: 401,
             })
+        })
+})
+
+Router.get('/SuggestionInfluencers/:id',async(req,res) => {
+    const userid = req.headers['userid']
+    if (!userid) {
+        return res.status(400).json({
+            message: "User Id Required on Header",
+            status: 400,
+        })
+    }
+    if (userid === "null") {
+        return res.status(400).json({
+            message: "User Id Required on Header",
+            status: 400,
+        })
+    }
+    const currentGigs = await Gigs.findById(req.params.id);
+    Userlogin.aggregate(
+        [{ $match: { intrested: { $in: [...currentGigs.interests] } } },
+        {
+            $lookup: {
+                from: "Gigs",
+                localField: "intrested",
+                foreignField: "interests",
+                as: "invite_user",
+            },
+            $lookup: {
+                from: "Gigs",
+                localField: "_id",
+                foreignField: "user",
+                as: "userInfo",
+            },
+        }], (error, resulte) => {
+            if (error) {
+                return res.status(400).json({
+                    message: "execute error",
+                    error: error,
+                    status: 400,
+                })
+            } else {
+                return res.status(200).json({
+                    message: "to get Data",
+                    result: resulte,
+                    status: 200,
+                })
+            }
         })
 })
 
