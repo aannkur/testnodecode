@@ -82,7 +82,7 @@ Router.get('/getinvitationUser', (req, res) => {
             status: 400,
         })
     }
-    Invitation.find({ user: userid }).populate('user').populate('gigs').then((result) => {
+    Invitation.find({ user: userid,invitationStatus:'Pending' }).populate('user').populate('gigs').then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,
