@@ -125,7 +125,7 @@ Router.get('/getgigsupdate/:id', (req, res) => {
             status: 400,
         })
     }
-    Gigs.findOne({_id:id}).populate('interestPepole').then((result) => {
+    Gigs.findOne({_id:id}).populate('interestPepole').populate('user').then((result) => {
         res.status(200).json({
             message: "Get Brand Gigs",
             result: result,

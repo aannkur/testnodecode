@@ -46,7 +46,6 @@ const Gigs = mongoose.Schema(
             enum : ['Open','In-Process','Close'],
             default: 'Open'
         },
-        
             interestPepole: [{ type: mongoose.Types.ObjectId, ref: 'UserLogin' }],
         
         
