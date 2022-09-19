@@ -111,7 +111,7 @@ Router.put("/statusinvitation/:id", (req, res) => {
     const { invitationStatus} = req.body
 
         const data = {
-            invitationStatus:invitationStatus
+                invitationStatus:invitationStatus
         }
         Invitation.findOneAndUpdate({ _id:invitatinid}, { $set: data }, { new: true }).then((result) => {
             res.status(200).json({
@@ -126,7 +126,6 @@ Router.put("/statusinvitation/:id", (req, res) => {
             })
         })
 })
-
 
 
 Router.get('/SuggestionInfluencers/:id',async(req,res) => {
