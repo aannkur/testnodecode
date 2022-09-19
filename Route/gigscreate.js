@@ -192,7 +192,7 @@ Router.put('/updateinterest/:id', (req, res) => {
             })
         } else if (result.length > 0) {
             return res.status(200).json({
-                messag: "You already interest this gigs.",
+                message: "You already interest this gigs.",
                 status: 200,
             })
 

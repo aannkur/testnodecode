@@ -127,6 +127,8 @@ Router.put("/statusinvitation/:id", (req, res) => {
         })
 })
 
+
+
 Router.get('/SuggestionInfluencers/:id',async(req,res) => {
     const userid = req.headers['userid']
     if (!userid) {
@@ -152,7 +154,7 @@ Router.get('/SuggestionInfluencers/:id',async(req,res) => {
                 as: "invite_user",
             },
             $lookup: {
-                from: "Gigs",
+                from: "invitation",
                 localField: "_id",
                 foreignField: "user",
                 as: "userInfo",
