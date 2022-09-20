@@ -5,7 +5,7 @@ const Gigs = require('../Modal/Gigs')
 
 const Userlogin = require('../Modal/UserLogin')
 
-// const Gigs = require('../Modal/Gigs')
+const AcceptInformtion = require('../utility/AcceptInformtion')
 
 
 Router.post('/Invitation/', async (req, res) => {
@@ -113,12 +113,17 @@ Router.put("/statusinvitation/:id", (req, res) => {
         const data = {
                 invitationStatus:invitationStatus
         }
-        Invitation.findOneAndUpdate({ _id:invitatinid}, { $set: data }, { new: true }).then((result) => {
+        Invitation.findOneAndUpdate({ _id:invitatinid}, { $set: data }, { new: true }).populate('userto').then((result) => {
             res.status(200).json({
                 message: "change Invitation",
                 result: result,
                 status: 200,
             })
+            let emailObj = {
+                email: result.userto.email,
+                Status: result.invitationStatus
+            }
+            let sendLoginCredentials = AcceptInformtion.sendStatus(emailObj)
         }).catch((err) => {
             res.json({
                 error: err,

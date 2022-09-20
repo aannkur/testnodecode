@@ -2,10 +2,11 @@ const express = require('express')
 const Router = express.Router()
 const Gigs = require('../Modal/Gigs')
 const User = require('../Modal/UserLogin')
-
 const multer = require("multer")
 const Validationcreategigs = require('../validation.js/validationforcreategigs')
 const mongoose = require('mongoose')
+const Interseted = require('../utility/Interseted')
+ 
 
 const Objectid = mongoose.Types.ObjectId;
 
@@ -20,10 +21,6 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-// Router.post('/gigs',upload.single("image"),(req,res) => {
-//     const {heading,about,country,intrests,channels,minimum_followers, age_group, gender, pay_per_post,commission} = req.body
-//     console.log(req.body)
-// })
 
 Router.post('/create', upload.single("image"), (req, res) => {
     console.log("body===", req.body)
@@ -67,7 +64,7 @@ Router.post('/create', upload.single("image"), (req, res) => {
                 status: 200,
             })
         }).catch((error) => {
-            console.log("==error", error)
+            // console.log("==error", error)
             res.json({
                 error: error,
                 status: 501,
@@ -75,8 +72,6 @@ Router.post('/create', upload.single("image"), (req, res) => {
         })
     }
 })
-
-
 
 Router.get('/getgigs', (req, res) => {
     const userid = req.headers['userid']
@@ -109,7 +104,6 @@ Router.get('/getgigs', (req, res) => {
 
 })
 
-
 Router.get('/getgigsupdate/:id', (req, res) => {
     const id= (req.params.id).trim()
     const userid = req.headers['userid']
@@ -138,7 +132,6 @@ Router.get('/getgigsupdate/:id', (req, res) => {
         })
     })
 })
-
 
 Router.get('/getgigsUser', (req, res) => {
     const userid = req.headers['userid']
@@ -198,7 +191,6 @@ Router.put('/updateinterest/:id', (req, res) => {
 
         } else {
             User.find({ _id: userid }).exec((error, userdata) => {
-                // console.log("userdata",userdata)
                 if (error) {
                     return res.status(400).json({
                         message: "Connection Failed",
@@ -211,16 +203,22 @@ Router.put('/updateinterest/:id', (req, res) => {
                         status: false
                     })
                 } else {
-                    Gigs.findOneAndUpdate({ _id: req.params.id }, { $push: { interestPepole: userid } }, { new: true }).then((result) => {
+                    Gigs.findOneAndUpdate({ _id: req.params.id }, { $push: { interestPepole: userid } }, { new: true }).populate('user').then((result) => {
                         res.status(200).json({
                             message: "You interest this gigs.thanks ",
                             result: result,
                             status: 200,
                         })
+                        let emailObj = {
+                            email: result.user.email
+                        }
+                        let sendLoginCredentials = Interseted.sendInterest(emailObj)
+
+
                     }).catch((err) => {
                         res.json({
                             error: err,
-                            status: 501,
+                            status: 401,
                         })
                     })
 
