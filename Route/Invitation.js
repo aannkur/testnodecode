@@ -2,10 +2,9 @@ const express = require('express')
 const Router = express.Router()
 const Invitation = require('../Modal/invitation')
 const Gigs = require('../Modal/Gigs')
-
 const Userlogin = require('../Modal/UserLogin')
-
 const AcceptInformtion = require('../utility/AcceptInformtion')
+const Notification = require('../Modal/Notification')
 
 
 Router.post('/Invitation/', async (req, res) => {
@@ -35,7 +34,7 @@ Router.post('/Invitation/', async (req, res) => {
             })
         } else if (result.length > 0) {
             return res.status(200).json({
-                message: "you have already send invitation",
+                message: "You have already applied for the gig.",
                 status: 200
             })
 
@@ -49,23 +48,19 @@ Router.post('/Invitation/', async (req, res) => {
 
             invitationuser.save().then((result) => {
                 res.status(200).json({
-                    message: "Send Invitation ",
+                    message: "Invitation Sent",
                     result: result,
                     status: 200
                 })
             }).catch((error) => {
-                console.log("==error", error)
+                // console.log("==error", error)
                 res.json({
                     error: error,
                     status: 501,
                 })
             })
         }
-
     })
-
-
-
 })
 
 
@@ -113,12 +108,21 @@ Router.put("/statusinvitation/:id", (req, res) => {
         const data = {
                 invitationStatus:invitationStatus
         }
-        Invitation.findOneAndUpdate({ _id:invitatinid}, { $set: data }, { new: true }).populate('userto').then((result) => {
+        
+        Invitation.findOneAndUpdate({ _id:invitatinid}, { $set: data }, { new: true }).populate('userto').populate('userfrom').then((result) => {
             res.status(200).json({
-                message: "change Invitation",
+                message: "Status Updated",
                 result: result,
                 status: 200,
             })
+            console.log("result", result)
+            const notifiction = new Notification({
+                userinterested: result.userto,
+                gigsuser: result.userfrom,
+                gigs: result.gigs,
+                reason:invitationStatus
+            }) 
+            notifiction.save()
             let emailObj = {
                 email: result.userto.email,
                 Status: result.invitationStatus
@@ -178,7 +182,8 @@ Router.get('/SuggestionInfluencers/:id',async(req,res) => {
                 })
             }
         })
-})
+}) 
+
 
 
 

@@ -2,6 +2,7 @@ const express = require('express')
 const Router = express.Router()
 const Gigs = require('../Modal/Gigs')
 const User = require('../Modal/UserLogin')
+const Notification = require('../Modal/Notification')
 const multer = require("multer")
 const Validationcreategigs = require('../validation.js/validationforcreategigs')
 const mongoose = require('mongoose')
@@ -177,6 +178,7 @@ Router.put('/updateinterest/:id', (req, res) => {
         })
     }
     Gigs.find({ _id: req.params.id, interestPepole: userid, }).exec((error, result) => {
+        console.log(result)
         if (error) {
             return res.status(400).json({
                 message: "Connection Failed",
@@ -185,7 +187,7 @@ Router.put('/updateinterest/:id', (req, res) => {
             })
         } else if (result.length > 0) {
             return res.status(200).json({
-                message: "You already interest this gigs.",
+                message: "You have already applied for the gig.",
                 status: 200,
             })
 
@@ -203,18 +205,26 @@ Router.put('/updateinterest/:id', (req, res) => {
                         status: false
                     })
                 } else {
+                   
+
                     Gigs.findOneAndUpdate({ _id: req.params.id }, { $push: { interestPepole: userid } }, { new: true }).populate('user').then((result) => {
                         res.status(200).json({
-                            message: "You interest this gigs.thanks ",
+                            message: "You apply for the gig",
                             result: result,
                             status: 200,
                         })
+
+                        const notifiction = new Notification({
+                            userinterested: userid,
+                            gigsuser: result.user._id,
+                            gigs: req.params.id,
+                            reason:'Interested'
+                        }) 
+                        notifiction.save()
                         let emailObj = {
                             email: result.user.email
                         }
                         let sendLoginCredentials = Interseted.sendInterest(emailObj)
-
-
                     }).catch((err) => {
                         res.json({
                             error: err,

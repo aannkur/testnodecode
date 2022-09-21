@@ -13,6 +13,8 @@ const Converationmessage = require('./Route/Converationmessage')
 const Loginwithgoogle = require('./Route/loginwithgoogle')
 const SuggestionGigs = require('./Route/SuggestionGigs')
 const Invitation = require('./Route/Invitation')
+const Notification = require('./Route/Notification')
+
 
 var cors = require('cors')
 const Gigscreate = require('./Route/gigscreate')
@@ -36,7 +38,7 @@ app.use('/api', Converationmessage)
 app.use('/api', Loginwithgoogle)
 app.use('/api', SuggestionGigs)
 app.use('/api', Invitation)
-
+app.use('/api', Notification)
 
 
 

@@ -84,8 +84,8 @@ Router.post('/register', (req, res) => {
                                         result: results
                                     })
                                 }).catch((err) => {
-                                    res.status(500).json({
-                                        massage: "server error",
+                                    res.status(400).json({
+                                        massage: "Something went wrong. Please retry after 10 mins.",
                                         err: err,
                                         status: false
                                     })
