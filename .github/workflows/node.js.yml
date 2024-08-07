@@ -23,5 +23,5 @@ jobs:
                 source /var/www/phanomprofes_usr/data/.bashrc
                 git pull origin main
                 npm install
-                pm2 stop index.js
+                pm2 stop indexs.js
                 pm2 start index.js
