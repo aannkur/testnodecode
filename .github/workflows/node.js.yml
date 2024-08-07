@@ -21,6 +21,8 @@ jobs:
           script: |
             cd /var/www/phanomprofes_usr/data/git-test/creatortrendi-backend
                 source /var/www/phanomprofes_usr/data/.bashrc
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
                 git pull origin main
                 npm install
                 /var/www/phanomprofes_usr/data/.nvm/versions/node/v18.18.2/bin/pm2 stop index.js
