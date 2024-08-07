@@ -21,6 +21,7 @@ jobs:
          host: ${{secrets.SSH_HOST}}
          password: ${{secrets.SSH_PASSWORD}}
          username: ${{secrets.SSH_USERNAME}}
+         port: ${{secrets.SSH_PORT}}
 
          script: |
           cd /var/www/phanomprofes_usr/data/git-test/creatortrendi-backend
