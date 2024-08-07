@@ -1,32 +1,27 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
+---
 name: Node.js CI
-
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - main
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: appleboy/ssh-action@master
         name: executing remote ssh commands using password
         with:
-         host: ${{secrets.SSH_HOST}}
-         password: ${{secrets.SSH_PASSWORD}}
-         username: ${{secrets.SSH_USERNAME}}
-         port: ${{secrets.SSH_PORT}}
-
-         script: |
-          cd /var/www/phanomprofes_usr/data/git-test/creatortrendi-backend
-              source /var/www/phanomprofes_usr/data/.bashrc
-              git pull origin main
-              npm install
-              pm2 stop index.js
-              pm2 start index.js
+          host: ${{secrets.SSH_HOST}}
+          password: ${{secrets.SSH_PASSWORD}}
+          username: ${{secrets.SSH_USERNAME}}
+          port: ${{secrets.SSH_PORT}}
+          script: |
+            cd /var/www/phanomprofes_usr/data/git-test/creatortrendi-backend
+                source /var/www/phanomprofes_usr/data/.bashrc
+                git pull origin main
+                npm install
+                pm2 stop index.js
+                pm2 start index.js
